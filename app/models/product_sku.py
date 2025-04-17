@@ -28,3 +28,5 @@ class ProductSKU(db.Model):
     def get_price_by_spu_id(spu_id):
         return ProductSKU.query.filter_by(products_spu_id=spu_id).first().price
 
+
+    

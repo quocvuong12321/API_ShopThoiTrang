@@ -35,6 +35,8 @@ class ProductSPU(db.Model):
             'brand_id': self.brand_id,
             'image': self.image,
             'key': self.key,
+            'short_description': self.short_description,
+            'description' : self.description,
             'category_id': self.category_id,
             'total_rating': rating_data['total_rating'],
             'average_star':rating_data['avg_star'],
@@ -66,7 +68,15 @@ class ProductSPU(db.Model):
     def filter_products_by_categoryid(id):
         return ProductSPU.query.filter_by(category_id=id).all()
     
-
+    def filter_product_by_Price(min_price, max_price):
+        return (
+        ProductSPU.query
+        .join(ProductSKU)
+        .filter(ProductSKU.price >= min_price, ProductSKU.price <= max_price)
+        .distinct(ProductSPU.products_spu_id)  # Đảm bảo chỉ lấy một lần mỗi ProductSPU
+        .all()
+    )
+    
 
 
     

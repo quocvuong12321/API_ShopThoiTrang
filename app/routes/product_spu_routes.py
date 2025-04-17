@@ -1,5 +1,6 @@
 import os
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
+from app.models.product_sku import ProductSKU
 from app.models.product_spu import ProductSPU
 from flask import send_from_directory
 from sqlalchemy.orm import joinedload
@@ -30,6 +31,16 @@ def get_detail_spu(spu_id):
 
 @product_bp.route('/<category_id>')
 def get_products_by_category(category_id):
-    products = ProductSPU.filter_products_by_categoryid(category_id)
-    return jsonify([item.to_home() for item in products])
+    # Lấy giá trị min_price và max_price từ query string (nếu có)
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
 
+    # Lọc sản phẩm theo category_id
+    products = ProductSPU.filter_products_by_categoryid(category_id)
+
+    # Nếu có min_price và max_price, thêm điều kiện lọc theo giá
+    if min_price is not None and max_price is not None:
+        products = [product for product in products if ProductSKU.get_price_by_spu_id(product.products_spu_id) >= min_price and ProductSKU.get_price_by_spu_id(product.products_spu_id) <= max_price]
+
+    # Trả về kết quả dưới dạng JSON
+    return jsonify([item.to_home() for item in products])
