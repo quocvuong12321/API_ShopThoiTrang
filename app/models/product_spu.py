@@ -43,17 +43,15 @@ class ProductSPU(db.Model):
             'media' : self.media
         }
     
-    
+
 
     def to_home(self):
         rating_data = Ratings.getRatingAndReviewCount(self.products_spu_id)
-        image_path = self.image
-        static_image_url = f"/static/{image_path}"
         return{
         'product_spu_id' : self.products_spu_id,
         'name': self.name,
         'brand_id': self.brand_id,
-        'image': static_image_url,
+        'image': self.image,
         'price': ProductSKU.get_price_by_spu_id(self.products_spu_id),
         'total_rating': rating_data['total_rating'],
         'average_star':rating_data['avg_star'],

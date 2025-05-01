@@ -13,6 +13,7 @@ class ProductSKUAttr(db.Model):
 
     def to_dict(self):
         return {
+            'sku_attr_id': self.product_sku_attr_id,
             'name': self.name,
             'value': self.value,
             'image': self.image

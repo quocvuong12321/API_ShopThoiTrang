@@ -11,6 +11,7 @@ class DescriptionAttr(db.Model):
 
     def to_dict(self):
         return {
+            'attr_id' : self.description_attr_id,
             'name': self.name,
             'value': self.value
         }
