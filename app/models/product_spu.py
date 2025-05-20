@@ -58,8 +58,9 @@ class ProductSPU(db.Model):
         'key': self.key,
         }
     
-    def get_Random_Products():
-        products = ProductSPU.query.order_by(func.rand()).limit(1000).all()
+    def get_Products(page=1, per_page=50):
+        offset = (page - 1) * per_page
+        products = ProductSPU.query.filter_by(delete_status='Active').order_by(ProductSPU.create_date.desc()).offset(offset).limit(per_page).all()
         return products
 
 
