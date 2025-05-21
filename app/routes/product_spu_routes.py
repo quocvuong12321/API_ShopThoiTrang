@@ -37,6 +37,34 @@ def get_List_Products():
                    'total_pages': total_pages,
                    'current_page': page,
                    'per_page': per_page})
+def get_List_Products():
+    page = int(request.args.get('page', 1))
+    per_page=50
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
+    category_id = request.args.get('category_id', type=str)
+
+    query = ProductSPU.query.filter_by(delete_status='Active')
+
+    if category_id:
+        query = query.filter_by(category_id=category_id)
+
+    if min_price is not None and max_price is not None:
+        query = query.join(ProductSKU).filter(ProductSKU.price >= min_price, ProductSKU.price <= max_price)
+
+    query = query.order_by(ProductSPU.create_date.desc())
+
+    products = query.offset((page - 1) * per_page).limit(per_page).all()
+
+    total_items = query.count()
+
+    total_pages = (total_items + per_page - 1) // per_page
+
+    return jsonify({'products' : [item.to_home() for item in products],
+                   'total_items': total_items,
+                   'total_pages': total_pages,
+                   'current_page': page,
+                   'per_page': per_page})
 
 @product_bp.route('/detail/<spu_id>', methods=["GET"])
 def get_detail_spu(spu_id):
