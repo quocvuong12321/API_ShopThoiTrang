@@ -42,7 +42,7 @@ def get_embedding(image_path):
         img_tensor = transform(img).unsqueeze(0).to(device)
         img.close()
     except Exception as e:
-        # print(f"❌ Lỗi mở ảnh: {image_path}, {e}")
+        # print(f"Lỗi mở ảnh: {image_path}, {e}")
         return None
 
     with torch.no_grad():
